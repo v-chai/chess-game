@@ -15,5 +15,9 @@ class Piece
         false
     end
 
+    def to_s
+        self.symbol.colorize(self.color)
+    end
+
 
 end

@@ -46,7 +46,7 @@ class Cursor
   end
 
   def toggle_selected
-    @selected ? false : true
+    @selected = !@selected
   end
   private
 
@@ -82,13 +82,17 @@ class Cursor
   def handle_key(key)
     case key
       when :return, :space
-        @selected = toggle_selected
+        toggle_selected
         return @cursor_pos 
       when :left, :right, :up, :down
+        @selected = false
         update_pos(MOVES[key])
         return nil
       when :ctrl_c
-        Process.exit(0)
+        exit 0
+      else 
+        puts key
+
     end
   end
 
