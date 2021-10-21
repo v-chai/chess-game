@@ -1,6 +1,7 @@
 require_relative "pieces"
 
 class Board
+    attr_reader :rows
     def initialize
         @rows = Array.new(8) {Array.new}
         @sentinel = NullPiece.instance
@@ -47,6 +48,18 @@ class Board
         end
         fill_empty_rows
     end
+
+    def pieces
+        pieces = []
+        @rows.each do |row|
+            row_symbols = []
+            row.each do |piece|
+                row_symbols << piece.symbol
+            end
+        pieces << row_symbols
+        end
+        pieces
+    end
     private
     attr_reader :sentinel
 
@@ -69,7 +82,7 @@ class Board
 
     def fill_empty_rows
         (2..5).each do |row_idx|
-            (0..8).each do |col_idx|
+            (0..7).each do |col_idx|
                 @rows[row_idx][col_idx] = sentinel
             end
         end
