@@ -5,7 +5,7 @@ class NullPiece < Piece
     include Singleton
     attr_reader :symbol
     def initialize
-        @symbol = " "
+        @symbol = "   "
         @color = :none
     end
 

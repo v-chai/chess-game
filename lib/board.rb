@@ -2,10 +2,10 @@ require_relative "pieces"
 
 class Board
     attr_reader :rows
-    def initialize
+    def initialize(new_board=true)
         @rows = Array.new(8) {Array.new}
         @sentinel = NullPiece.instance
-        self.place_pieces
+        self.place_pieces if new_board
     end
 
     def[](pos)
@@ -23,14 +23,26 @@ class Board
         self[pos] = piece
     end
 
-    def move_piece(start_pos, end_pos)
+    def move_piece(turn_color, start_pos, end_pos)
+        piece = self[start_pos]
+        if  turn_color != piece.color
+            raise "You can't move your opponent's piece"
+        elsif !piece.moves.include?(end_pos)
+            raise "That piece does not move like that"
+        elsif !piece.valid_moves.include?(end_pos)
+            raise "This would move you into check"
+        end
+        move_piece!(start_pos, end_pos) 
+    end
+    
+    def move_piece!(start_pos, end_pos)
         piece = self[start_pos]
         raise "No piece here" if piece == sentinel
-        raise "Cannot move this piece here" unless piece.moves.include?(end_pos)
+        raise "That piece does not move like that" unless piece.moves.include?(end_pos)
         
-        piece.position = end_pos
         self[end_pos] = piece 
         self[start_pos] = sentinel
+        piece.position = end_pos
     end
 
     def valid_pos?(pos)
@@ -50,18 +62,39 @@ class Board
     end
 
     def pieces
-        pieces = []
-        @rows.each do |row|
-            row_symbols = []
-            row.each do |piece|
-                row_symbols << piece.symbol
-            end
-        pieces << row_symbols
-        end
-        pieces
+        @rows.flatten.reject {|piece| piece.color==:none}
     end
-    private
+
+    def player_pieces(color)
+        pieces.select {|piece| piece.color == color}
+    end
+
+    def in_check?(color)
+        king_pos = find_king(color)
+        pieces.any? do |piece|
+            piece.color != color && piece.moves.include?(king_pos)
+        end
+    end
+
+    def checkmate?(color)
+        in_check?(color) &&
+          player_pieces(color).none? { |piece| piece.valid_moves.length > 0}
+    end
+
+    def dup
+        new_board = Board.new(false)
+        pieces.each do |piece|
+            piece.class.new(piece.color, new_board, piece.pos)
+        end
+        new_board
+    end 
+
+    
     attr_reader :sentinel
+    def find_king(color)
+        king = pieces.select {|piece| piece.is_a?(King) && piece.color == color}
+        king[0].position
+    end
 
     def fill_back_row(color)
         pieces = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]

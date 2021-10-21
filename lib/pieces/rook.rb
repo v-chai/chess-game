@@ -4,7 +4,7 @@ require_relative "slideable"
 class Rook < Piece
     include Slideable
     def symbol
-        '♜'.colorize(color)
+        ' ♜ '.colorize(color)
     end
 
     protected

@@ -2,23 +2,22 @@ require_relative "piece"
 
 class Pawn < Piece
     def symbol
-        '♟︎'.colorize(color)
+        ' ♟︎ '.colorize(color)
     end
 
     def moves
         moves = []
+        current_x, current_y = position
         forward_steps.each do |step|
-            current_x, current_y = position
-            position = [current_x + step, current_y]
-            next if !board.valid_pos?(position)
-            moves << position if board.empty?(position) 
+            new_position = [current_x + step, current_y]
+            next if !board.valid_pos?(new_position)
+            moves << new_position if board.empty?(new_position) 
         end
         side_attacks.each do |side_attack|
             dx, dy = side_attack
-            current_x, current_y = position
-            position = [current_x + dx, current_y + dy]
-            next if board[position].color == color
-            moves << position unless board.empty?(position)
+            new_position = [current_x + dx, current_y + dy]
+            next if !board.valid_pos?(new_position) || board[new_position].color == color
+            moves << new_position unless board.empty?(new_position)
         end
         moves
     end

@@ -10,12 +10,9 @@ class Display
     end
 
     def render
-        until @cursor.get_input == :ctrl_c
-            system("clear")
-            puts "Use arrow keys, WASD, or vim to move cursor. Press space or enter to select."
-            build_grid.each { |row| puts row.join }
-            @cursor.get_input
-        end
+        system("clear")
+        puts "Use arrow keys, WASD, or vim to move cursor. Press space or enter to select."
+        build_grid.each { |row| puts row.join }
     end
     
     def build_grid
@@ -33,11 +30,11 @@ class Display
 
     def bg_color(row_idx, col_idx)
         if @cursor.cursor_pos == [row_idx, col_idx] && @cursor.selected
-            return :blue
+            return :light_yellow
         elsif @cursor.cursor_pos == [row_idx, col_idx] && !@cursor.selected
             return :red
         elsif [row_idx, col_idx].all?(&:even?) || [row_idx, col_idx].all?(&:odd?)
-            return :gray
+            return :light_blue
         else
             return :green
         end
@@ -66,10 +63,3 @@ class Display
 
   
 end
-
-
-if __FILE__ == $PROGRAM_NAME
-    d = Display.new(Board.new)
-    d.render
-end
-        
