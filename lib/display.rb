@@ -23,6 +23,14 @@ class Display
     def reset!
         @notifications.delete(:error)
     end
+
+    def in_check!
+        @notifications[:check] = "Check!"
+    end
+
+    def out_check!
+        @notifications.delete(:check)
+    end
     
     def build_grid
         @board.rows.map.with_index do |row, row_idx|

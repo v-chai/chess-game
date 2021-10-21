@@ -20,6 +20,8 @@ class Game
                 @board.move_piece(current_player, start_pos, end_pos)
 
                 @current_player = (current_player == :white ? :black : :white)
+
+                notify
             rescue StandardError => e
                 @display.notifications[:error] = e.message
                 retry
@@ -29,6 +31,13 @@ class Game
         puts "Checkmate! #{@current_player} loses."
     end
 
+    def notify
+        if board.in_check?(current_player)
+            display.in_check!
+        else
+            display.out_check!
+        end
+    end
 end
 
 if $PROGRAM_NAME == __FILE__

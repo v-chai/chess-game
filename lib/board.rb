@@ -4,8 +4,9 @@ require "byebug"
 class Board
     attr_reader :rows
     def initialize(new_board=true)
-        @rows = Array.new(8) {Array.new}
         @sentinel = NullPiece.instance
+        @rows = Array.new(8) { Array.new(8, @sentinel) }
+        
         self.place_pieces if new_board
     end
 
@@ -27,7 +28,7 @@ class Board
     def move_piece(turn_color, start_pos, end_pos)
         piece = self[start_pos]
         if  turn_color != piece.color
-            raise "You can't move your opponent's piece"
+            raise "You have to move your own piece"
         elsif !piece.moves.include?(end_pos)
             raise "That piece does not move like that"
         elsif !piece.valid_moves.include?(end_pos)
@@ -88,6 +89,7 @@ class Board
         pieces.each do |piece|
             piece.class.new(piece.color, new_board, piece.position)
         end
+
         new_board
     end 
 
