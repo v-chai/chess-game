@@ -1,18 +1,15 @@
 require "colorize"
 
 class Piece
-    attr_reader :color, :board
+    attr_reader :color, :board, :empty
     attr_accessor :position
-    def initialize(color, board, position)
+    def initialize(color, board, position, empty=false)
         raise 'invalid color' if !%i(white black).include?(color)
         @color = color
         @board = board
         @position = position
         @board.add_piece(self, @position)
-    end
-
-    def empty?
-        false
+        @empty = empty
     end
 
     def to_s

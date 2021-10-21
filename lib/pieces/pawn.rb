@@ -6,20 +6,7 @@ class Pawn < Piece
     end
 
     def moves
-        moves = []
-        current_x, current_y = position
-        forward_steps.each do |step|
-            new_position = [current_x + step, current_y]
-            next if !board.valid_pos?(new_position)
-            moves << new_position if board.empty?(new_position) 
-        end
-        side_attacks.each do |side_attack|
-            dx, dy = side_attack
-            new_position = [current_x + dx, current_y + dy]
-            next if !board.valid_pos?(new_position) || board[new_position].color == color
-            moves << new_position unless board.empty?(new_position)
-        end
-        moves
+        forward_steps + side_attacks
     end
 
     private
@@ -43,14 +30,31 @@ class Pawn < Piece
     end
 
     def forward_steps
+        current_x, current_y = position
+        step = [current_x + forward_dir, current_y]
+        return [] unless board.valid_pos?(step) && board[step].empty
+        moves = [step]
         if at_start_row?
-            [forward_dir, forward_dir*2]
-        else
-            [forward_dir]
+            second_step = [current_x + forward_dir * 2, current_y]
+            moves << second_step if board.valid_pos?(second_step) && board[second_step].empty
         end
+        moves
+
     end
 
     def side_attacks
-        [[forward_dir,1],[forward_dir,-1]]
+        moves = []
+        current_x, current_y = position
+
+        side_moves = 
+            [[current_x + forward_dir, current_y + 1],
+            [current_x + forward_dir, current_y - 1]]
+
+        side_moves.each do |new_position|
+            next if !board.valid_pos?(new_position) 
+            next if [color, :none].include?(board[new_position].color)
+            moves << new_position
+        end
+        moves
     end
 end

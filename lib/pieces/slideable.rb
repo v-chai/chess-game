@@ -33,7 +33,7 @@ module Slideable
 
             break unless self.board.valid_pos?(position)
 
-            if self.board.empty?(position)
+            if board[position].empty
                 moves << position
             else 
                 moves << position if self.board[position].color != color

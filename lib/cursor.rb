@@ -85,7 +85,6 @@ class Cursor
         toggle_selected
         return @cursor_pos 
       when :left, :right, :up, :down
-        @selected = false
         update_pos(MOVES[key])
         return nil
       when :ctrl_c

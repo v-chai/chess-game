@@ -3,16 +3,25 @@ require_relative 'cursor'
 require_relative 'board'
 
 class Display
-    attr_reader :board, :cursor
+    attr_reader :board, :cursor, :notifications
     def initialize(board)
         @board = board
         @cursor = Cursor.new([0,0], board)
+        @notifications = {}
     end
 
     def render
         system("clear")
         puts "Use arrow keys, WASD, or vim to move cursor. Press space or enter to select."
         build_grid.each { |row| puts row.join }
+
+        @notifications.each do |_key, val|
+            puts val
+        end
+    end
+
+    def reset!
+        @notifications.delete(:error)
     end
     
     def build_grid

@@ -1,4 +1,5 @@
 require_relative "pieces"
+require "byebug"
 
 class Board
     attr_reader :rows
@@ -49,9 +50,10 @@ class Board
         pos.all? { |coord| coord.between?(0, 7) }
     end
 
-    def empty?(pos)
-        self[pos].empty?
-    end
+    # def empty?(pos)
+    #     debugger
+    #     self[pos].empty
+    # end
 
     def place_pieces
         [:black, :white].each do |color|
@@ -84,7 +86,7 @@ class Board
     def dup
         new_board = Board.new(false)
         pieces.each do |piece|
-            piece.class.new(piece.color, new_board, piece.pos)
+            piece.class.new(piece.color, new_board, piece.position)
         end
         new_board
     end 

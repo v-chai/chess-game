@@ -3,14 +3,11 @@ require_relative "piece"
 
 class NullPiece < Piece
     include Singleton
-    attr_reader :symbol
+    attr_reader :symbol, :empty
     def initialize
         @symbol = "   "
         @color = :none
-    end
-
-    def empty?
-        true
+        @empty = true
     end
 
 end

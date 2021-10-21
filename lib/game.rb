@@ -15,10 +15,15 @@ class Game
 
     def play
         until @board.checkmate?(@current_player)
-            start_pos, end_pos = @players[@current_player].make_move(board)
-            @board.move_piece(current_player, start_pos, end_pos)
+            begin
+                start_pos, end_pos = @players[@current_player].make_move(board)
+                @board.move_piece(current_player, start_pos, end_pos)
 
-            @current_player = (current_player == :white ? :black : :white)
+                @current_player = (current_player == :white ? :black : :white)
+            rescue StandardError => e
+                @display.notifications[:error] = e.message
+                retry
+            end
         end
         display.render
         puts "Checkmate! #{@current_player} loses."
